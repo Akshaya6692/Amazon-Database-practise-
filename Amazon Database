@@ -1,154 +1,29 @@
-create DATABASE AmazonDatabase1;
-Create Table Customers (
-Customerid  int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-ProductId int NOT NULL, 
-Firstname varchar(50) NOT NULL,
-Lastname varchar(50) NOT NULL,
-Gender char(20) NOT NULL,
-Email varchar(100) NOT NULL,
-city varchar(100) NOT NULL,
-State varchar(100) NOT NULL,
-Country varchar(100) NOT NULL,
-); 
+create DATABASE AmazonDB1;
+GO
+Use AmazonDB1 
+GO
 
-Create Table Account 
-(
-AccountId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-Customerid int NOT NULL, 
-AccountName Varchar(50) NOT NULL,
-email char(50) NOT NULL,
-password varchar(255) NOT NULL,
-Forgot_password varchar(100) DEFAULT NULL,
-);
-
-CREATE TABLE products(
-Productid int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-CustomerId Int NOT NULL,
-Productname varchar(255) NOT NULL,
-productType varchar(255) NOT NULL,
-Productcount int NOT NULL,
-Productcolor Varchar(255) NOT NULL,
-Productsize varchar(50) NOT NULL,
-Productprice int  NOT NULL
-);
-
-Create Table Orders
-(
-OrderId int IDENTITY(1,1) NOT NULL PRIMARY KEY, 
-ProductId int NOT NULL, 
-OrderName Varchar(255) NOT NULL,
-OrderDate date NOT NULL,
-OrderStatus char(50) NOT NULL,
-);
-
-Create table ProductCategory (
-CategoryId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-ProductId int NOT NULL,
-CategoryType varchar(50) NOT NULL,
-)
-
-Create Table Payment (
-PaymentId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-AccountId int NOT NULL, 
-PaymentMethod varchar(255) NOT NULL,
-Amount int NOT NULL,
-);
-
-Create Table shipping (
-shippingId int IDENTITY(1,1) NOT NULL PRIMARY KEY, 
-OrderId int NOT NULL,
-city char(50) NOT NULL, 
-State char(50) NOT NULL,
-Country char(50)NOT NULL,
-Postalcode int NOT NULL,
-Status char(50) NOT NULL,
-shippingnotes varchar(255),
-);
-
-Create table Invoice
-(
-InvoiceId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-ProductId int NOT NULL,
-ProductName varchar(255) NOT NULL, 
-Quantity Int NOT NULL, 
-Price int NOT NULL,
-);
-
-Create Table Suppliers(
-SupplierId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-OrderId int NOT NULL,
-CompanyName varchar (255) NOT NULL, 
-ContactName varchar (255) NOT NULL, 
-Address varchar (255) NOT NULL,
-Phone int NOT NULL, 
+Create Table Customer(
+CustomerId int IDENTITY(1,1) NOT NULL PRIMARY KEY, 
+FirstName nvarchar(50) NOT NULL,
+LastName nvarchar(50) NOT NULL,
+Gender nvarchar(20) NOT NULL,
+Email nvarchar(100) NOT NULL,
+City nvarchar(100) NOT NULL,
+State nvarchar(100) NOT NULL,
+Country nvarchar(100) NOT NULL,
+UserName nvarchar(50) NOT NULL,
+Password nvarchar(255) NOT NULL,
+ForgotPassword Bit DEFAULT 0 ,
 );
 
 
-Set IDENTITY_INSERT customers Off;
-INSERT INTO Customers (Customerid, ProductId, Firstname, Lastname, Gender, Email, City, State, Country)
-VALUES (1, 234, 'Akshaya', 'Sekar', 'Female', 'Aksh@gmail.com', 'Chennai', 'TN', 'India');
-
-Set IDENTITY_INSERT Account Off;
-INSERT INTO Account ( AccountId, Customerid, AccountName, Email, password, Forgot_password)
-VALUES (23, 1, 'AkshayaSekar', 'Aksh@gmail.com', '3435343', '454444');
-
-Set IDENTITY_INSERT Products OFF;
-INSERT INTO products (ProductId, Customerid, Productname, ProductType, Productcount, Productcolor, productsize, Productprice)
-VALUES (234, 1, 'skirt', 'dress', '1', 'blue', 'M', '500');
-
-Set IDENTITY_INSERT orders OFF;
-INSERT INTO Orders (OrderId, ProductId, OrderName, OrderDate, Orderstatus)
-VALUES (1234, 234, 'dress', '2020', 'InProgress');
-
-Set IDENTITY_INSERT Productcategory OFF;
-INSERT INTO ProductCategory (CategoryId, ProductId, CategoryType)
-VALUES (11, 234, 'Womens');
-
-Set IDENTITY_INSERT Payment OFF;
-INSERT INTO Payment (PaymentId, AccountId, PaymentMethod, Amount)
-VALUES (12, 23, 'Card', 350);
-
-Set IDENTITY_INSERT shipping OFF;
-INSERT INTO Shipping (shippingId, OrderId, city, State, Country, Postalcode, status, shippingnotes)
-VALUES (13, 1234, 'Chennai', 'TN' ,'India' ,600005 ,'Inprogess' ,'leave it to watchman');
-
-Set IDENTITY_INSERT Invoice OFF;
-INSERT INTO Invoice (InvoiceId, ProductId, ProductName, Quantity, Price)
-VALUES (14, 234, 'skirt', 1 ,500 );
-
-Set IDENTITY_INSERT Suppliers ON;
-INSERT INTO Suppliers (SupplierId, OrderId, CompanyName, ContactName, Address, Phone)
-VALUES (15, 1234, 'DHL', 'Mark', 'Delhi' ,23242224 );
-
-ALTER TABLE Customers
-ADD FOREIGN KEY (ProductId) REFERENCES Products(ProductId);
-
-ALTER TABLE Account
-ADD FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId);
-
-
-ALTER TABLE products
-ADD FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId);
-
-ALTER TABLE orders
-ADD FOREIGN KEY (Productid) REFERENCES Products(Productid);
-
-ALTER TABLE productcategory
-ADD FOREIGN KEY (Productid) REFERENCES Products(Productid);
-
-
-ALTER TABLE Payment
-ADD FOREIGN KEY (AccountId) REFERENCES Account(AccountId);
-
-ALTER TABLE Shipping
-ADD FOREIGN KEY (OrderID) REFERENCES Orders(OrderID);
-
-ALTER TABLE invoice 
-ADD FOREIGN KEY (Productid) REFERENCES Products(Productid);
-
-ALTER TABLE Suppliers
-ADD FOREIGN KEY (OrderID) REFERENCES Orders(OrderID);
-
-
-
-
+CREATE TABLE Products(
+ProductId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+ProductName nvarchar(255) NOT NULL,
+ProductType nvarchar(255) NOT NULL,
+ProductCount int NOT NULL,
+ProductColor nvarchar(255) NOT NULL,
+ProductSize nvarchar(50) NOT NULL,
+ProductPrice int  NOT NULL
+);
