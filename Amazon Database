@@ -18,7 +18,7 @@ ForgotPassword Bit DEFAULT 0 ,
 );
 
 
-CREATE TABLE Products(
+CREATE TABLE Products (
 ProductId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
 ProductName nvarchar(255) NOT NULL,
 ProductType nvarchar(255) NOT NULL,
@@ -27,3 +27,84 @@ ProductColor nvarchar(255) NOT NULL,
 ProductSize nvarchar(50) NOT NULL,
 ProductPrice int  NOT NULL
 );
+
+Create table Invoice (
+InvoiceId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+CustomerId int,
+ProductId Int,
+ProductName varchar(255) NOT NULL, 
+Quantity Int NOT NULL, 
+Price int NOT NULL,
+OrderDate date NOT NULL,
+OrderStatus char(50) NOT NULL,
+);
+
+Select * from Invoice
+
+ALTER TABLE Invoice
+ADD FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId);
+
+ALTER TABLE Invoice
+ADD FOREIGN KEY (ProductId) REFERENCES Products(ProductId);
+
+Create Table Payment(
+PaymentId int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+CustomerId Int,
+PaymentMethod nvarchar(255) NOT NULL,
+Amount int NOT NULL,
+);
+
+Create Table Shipping (
+ShippingId int IDENTITY (1,1) NOT NULL PRIMARY KEY, 
+City varchar(50) NOT NULL, 
+State varchar(50) NOT NULL,
+Country varchar(50)NOT NULL,
+Postalcode int NOT NULL,
+DeliveryStatus nvarchar(50) NOT NULL,
+ShippingNotes varchar(255),
+);
+
+Create Table Suppliers(
+SupplierId int identity(1,1) NOT NULL PRIMARY KEY,
+CompanyName varchar (255) NOT NULL, 
+ContactName varchar (255) NOT NULL, 
+Address varchar (255) NOT NULL,
+Phone int NOT NULL, 
+);
+
+
+Select * from customer
+Select * from products 
+Select * from Invoice 
+Select * from Payment
+Select * from Shipping
+Select * from Suppliers
+
+
+Alter Table Customer 
+Add PostalCode int  
+
+Set IDENTITY_INSERT Payment ON;
+INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+VALUES (1, 1, 'Cash', 4000);
+
+
+ALTER TABLE Payment
+ADD FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId)
+
+Drop Table Payment
+
+
+INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+VALUES (2, 2, 'Cash', 3000);
+INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+VALUES (3, 1, 'Cash', 4700);
+INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+VALUES (4, 7, 'Cash', 4000);
+INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+VALUES (5, 6, 'DebitCard', 40000);
+INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+VALUES (6, 1, 'CreditCard', 600);
+INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+VALUES (7, 1, 'CreditCard', 25000);
+
