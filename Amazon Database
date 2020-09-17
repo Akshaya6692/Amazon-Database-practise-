@@ -1,10 +1,10 @@
-create DATABASE AmazonDB1;
+create DATABASE AmazonDatabase2;
 GO
-Use AmazonDB1 
+Use AmazonDatabase2
 GO
 
 Create Table Customer(
-CustomerId int IDENTITY(1,1) NOT NULL PRIMARY KEY, 
+CustomerId int NOT NULL PRIMARY KEY, 
 FirstName nvarchar(50) NOT NULL,
 LastName nvarchar(50) NOT NULL,
 Gender nvarchar(20) NOT NULL,
@@ -19,7 +19,7 @@ ForgotPassword Bit DEFAULT 0 ,
 
 
 CREATE TABLE Products (
-ProductId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+ProductId int NOT NULL PRIMARY KEY,
 ProductName nvarchar(255) NOT NULL,
 ProductType nvarchar(255) NOT NULL,
 ProductCount int NOT NULL,
@@ -29,17 +29,22 @@ ProductPrice int  NOT NULL
 );
 
 Create table Invoice (
-InvoiceId int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+InvoiceId int NOT NULL PRIMARY KEY,
 CustomerId int,
 ProductId Int,
 ProductName varchar(255) NOT NULL, 
 Quantity Int NOT NULL, 
 Price int NOT NULL,
-OrderDate date NOT NULL,
 OrderStatus char(50) NOT NULL,
 );
 
-Select * from Invoice
+Create Table Payment(
+PaymentId int NOT NULL PRIMARY KEY,
+CustomerId Int,
+PaymentMethod nvarchar(255) NOT NULL,
+Amount int NOT NULL,
+);
+
 
 ALTER TABLE Invoice
 ADD FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId);
@@ -47,64 +52,58 @@ ADD FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId);
 ALTER TABLE Invoice
 ADD FOREIGN KEY (ProductId) REFERENCES Products(ProductId);
 
-Create Table Payment(
-PaymentId int IDENTITY (1,1) NOT NULL PRIMARY KEY,
-CustomerId Int,
-PaymentMethod nvarchar(255) NOT NULL,
-Amount int NOT NULL,
-);
-
-Create Table Shipping (
-ShippingId int IDENTITY (1,1) NOT NULL PRIMARY KEY, 
-City varchar(50) NOT NULL, 
-State varchar(50) NOT NULL,
-Country varchar(50)NOT NULL,
-Postalcode int NOT NULL,
-DeliveryStatus nvarchar(50) NOT NULL,
-ShippingNotes varchar(255),
-);
-
-Create Table Suppliers(
-SupplierId int identity(1,1) NOT NULL PRIMARY KEY,
-CompanyName varchar (255) NOT NULL, 
-ContactName varchar (255) NOT NULL, 
-Address varchar (255) NOT NULL,
-Phone int NOT NULL, 
-);
-
-
-Select * from customer
-Select * from products 
-Select * from Invoice 
-Select * from Payment
-Select * from Shipping
-Select * from Suppliers
-
-
-Alter Table Customer 
-Add PostalCode int  
-
-Set IDENTITY_INSERT Payment ON;
-INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
-VALUES (1, 1, 'Cash', 4000);
-
-
 ALTER TABLE Payment
-ADD FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId)
-
-Drop Table Payment
+ADD FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId);
 
 
+INSERT INTO Customer(CustomerId, FirstName, LastName, Gender, Email, City, State, Country, UserName, Password, ForgotPassword)
+VALUES (1, 'Akshaya', 'Sekar', 'Female', 'Aksh3@gmail.com', 'Chennai', 'Tamil Nadu', 'India', 'akshzzash' ,'akshbahs', 0);
+INSERT INTO Customer(CustomerId, FirstName, LastName, Gender, Email, City, State, Country, UserName, Password, ForgotPassword)
+VALUES (2, 'Adithya', 'Kiran', 'Male' ,'Adi63@gmail.com', 'Chennai', 'Tamil Nadu', 'India', 'adithezzash', 'adithecool', 0);
+INSERT INTO Customer(CustomerId, FirstName, LastName, Gender, Email, City, State, Country, UserName, Password, ForgotPassword)
+VALUES (3, 'Dhivya', 'Mohan', 'Female' ,'Dhiv77@gmail.com', 'Chennai', 'Tamil Nadu', 'India', 'dhiv33zzash' ,'zycabcd', 0);
+INSERT INTO Customer(CustomerId, FirstName, LastName, Gender, Email, City, State, Country, UserName, Password, ForgotPassword)
+VALUES (4, 'Padma', 'Sekar', 'Female' ,'Pads22@gmail.com', 'Chennai', 'Tamil Nadu', 'India', 'Padsekar', 'mommyoftwo' ,0);
+INSERT INTO Customer(CustomerId, FirstName, LastName, Gender, Email, City, State, Country, UserName, Password, ForgotPassword)
+VALUES (5, 'Sekar', 'Veeresan', 'Male', 'Sekardoc@yahoo.com', 'Banglore', 'Karnataka', 'India', 'doctorsekar' ,'daddycool',0);
+INSERT INTO Customer(CustomerId, FirstName, LastName, Gender, Email, City, State, Country, UserName, Password, ForgotPassword)
+VALUES (6, 'Dani', 'Suzz', 'Female' ,'Danimental@gmail.com', 'Kochi', 'Kerela', 'India', 'Danidani', 'danibae', 0);
+
+INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
+VALUES (1, 'Adidas Shoe', 'Footwear', 343335, 'Black', 'L', 3000);
+INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
+VALUES (2, 'Nike Shoe', 'Footwear', 3435, 'Blue', 'S', 4500);
+INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
+VALUES (3, 'Superdry Jacket', 'Jackets', 8999, 'Pink', 'L', 2000);
+INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
+VALUES (4, 'Superdry Flipflops', 'Footwear', 34, 'Black', 'M', 899);
+INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
+VALUES (5, 'Chain', 'Accessories', 2990, 'Gold', 'Nil', 30000);
+INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
+VALUES (6, 'Titan Watch', 'Watches', 244, 'RoseGold', 'Nil', 25000);
+
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price, OrderStatus)
+VALUES ( 1, 3, 4, 'Chain', 1, 30000, 'In Progress');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price, OrderStatus)
+VALUES ( 2, 4, 1, 'Adidas Shoe', 2, 6000, 'In Progress');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price,  OrderStatus)
+VALUES ( 3, 1, 2, 'Nike Shoe', 1, 4500, 'Delivered');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price, OrderStatus)
+VALUES ( 4, 1, 2, 'Nike Shoe', 1, 4500, 'In Progress');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price, OrderStatus)
+VALUES ( 5, 2, 3, 'Superdry Jacket', 3, 6000, 'Delivered');
+
+
 INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
-VALUES (2, 2, 'Cash', 3000);
+VALUES (1, 2, 'Creditcard', 3000);
 INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
-VALUES (3, 1, 'Cash', 4700);
+VALUES (2, 1, 'Cash', 4700);
 INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
-VALUES (4, 7, 'Cash', 4000);
+VALUES (3, 3, 'Cash', 4000);
 INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
-VALUES (5, 6, 'DebitCard', 40000);
+VALUES (4, 6, 'DebitCard', 40000);
 INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
-VALUES (6, 1, 'CreditCard', 600);
+VALUES (5, 1, 'CreditCard', 600);
 INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
-VALUES (7, 1, 'CreditCard', 25000);
+VALUES (6, 1, 'CreditCard', 25000);
 
