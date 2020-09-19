@@ -20,7 +20,7 @@ where Payment.PaymentMethod='Cash' and Products.ProductName <> Payment.PaymentMe
 END
 GO
 
-Create PROCEDURE GetTotalPriceOfProductsByCustomerId
+Create PROCEDURE spGetTotalPriceOfProductsByCustomerId
 AS 
 BEGIN
 Select CustomerId, Quantity, Price, (Price*Quantity) as TotalPrice from Invoice
@@ -141,4 +141,4 @@ Execute spGetProductsByStartingLetter
 
 Execute spGetProductsPaidByCash
 
-Execute GetTotalPriceOfProductsByCustomerId
+Execute spGetTotalPriceOfProductsByCustomerId
