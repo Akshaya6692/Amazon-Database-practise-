@@ -1,6 +1,31 @@
-create DATABASE AmazonDatabase2;
+create DATABASE AmazonDatabase
 GO
-Use AmazonDatabase2
+Use AmazonDatabase
+GO
+
+CREATE PROCEDURE spGetProductsByStartingLetter
+AS
+BEGIN
+Select ProductName from Products where ProductName Like 'S%'
+END
+GO
+
+CREATE Procedure spGetProductsPaidByCash
+AS
+BEGIN
+SELECT Products.ProductName, Payment.PaymentMethod
+from Products
+cross JOIN Payment 
+where Payment.PaymentMethod='Cash' and Products.ProductName <> Payment.PaymentMethod 
+END
+GO
+
+Create PROCEDURE GetTotalPriceOfProductsByCustomerId
+AS 
+BEGIN
+Select CustomerId, Quantity, Price, (Price*Quantity) as TotalPrice from Invoice
+where CustomerId = 1
+END
 GO
 
 Create Table Customer(
@@ -32,7 +57,6 @@ Create table Invoice (
 InvoiceId int NOT NULL PRIMARY KEY,
 CustomerId int,
 ProductId Int,
-ProductName varchar(255) NOT NULL, 
 Quantity Int NOT NULL, 
 Price int NOT NULL,
 OrderStatus char(50) NOT NULL,
@@ -40,7 +64,7 @@ OrderStatus char(50) NOT NULL,
 
 Create Table Payment(
 PaymentId int NOT NULL PRIMARY KEY,
-CustomerId Int,
+InvoiceId Int,
 PaymentMethod nvarchar(255) NOT NULL,
 Amount int NOT NULL,
 );
@@ -53,7 +77,7 @@ ALTER TABLE Invoice
 ADD FOREIGN KEY (ProductId) REFERENCES Products(ProductId);
 
 ALTER TABLE Payment
-ADD FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId);
+ADD FOREIGN KEY (InvoiceId) REFERENCES Invoice(InvoiceId);
 
 
 INSERT INTO Customer(CustomerId, FirstName, LastName, Gender, Email, City, State, Country, UserName, Password, ForgotPassword)
@@ -82,28 +106,39 @@ VALUES (5, 'Chain', 'Accessories', 2990, 'Gold', 'Nil', 30000);
 INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
 VALUES (6, 'Titan Watch', 'Watches', 244, 'RoseGold', 'Nil', 25000);
 
-INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price, OrderStatus)
-VALUES ( 1, 3, 4, 'Chain', 1, 30000, 'In Progress');
-INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price, OrderStatus)
-VALUES ( 2, 4, 1, 'Adidas Shoe', 2, 6000, 'In Progress');
-INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price,  OrderStatus)
-VALUES ( 3, 1, 2, 'Nike Shoe', 1, 4500, 'Delivered');
-INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price, OrderStatus)
-VALUES ( 4, 1, 2, 'Nike Shoe', 1, 4500, 'In Progress');
-INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, ProductName, Quantity, Price, OrderStatus)
-VALUES ( 5, 2, 3, 'Superdry Jacket', 3, 6000, 'Delivered');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, Quantity, Price, OrderStatus)
+VALUES ( 1, 3, 4, 1, 30000, 'In Progress');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, Quantity, Price, OrderStatus)
+VALUES ( 2, 4, 1, 2, 6000, 'In Progress');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, Quantity, Price,  OrderStatus)
+VALUES ( 3, 1, 2, 1, 4500, 'Delivered');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, Quantity, Price, OrderStatus)
+VALUES ( 4, 1, 3, 2, 2000, 'In Progress');
+INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, Quantity, Price, OrderStatus)
+VALUES ( 5, 2, 3, 3, 6000, 'Delivered');
 
 
-INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod, Amount)
 VALUES (1, 2, 'Creditcard', 3000);
-INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod, Amount)
 VALUES (2, 1, 'Cash', 4700);
-INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod, Amount)
 VALUES (3, 3, 'Cash', 4000);
-INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
-VALUES (4, 6, 'DebitCard', 40000);
-INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod, Amount)
+VALUES (4, 5, 'DebitCard', 40000);
+INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod, Amount)
 VALUES (5, 1, 'CreditCard', 600);
-INSERT INTO Payment (PaymentId, CustomerId, PaymentMethod, Amount)
+INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod, Amount)
 VALUES (6, 1, 'CreditCard', 25000);
 
+
+Select * from Customer
+Select * from Products
+Select * from Invoice
+Select * from Payment
+
+Execute spGetProductsByStartingLetter
+
+Execute spGetProductsPaidByCash
+
+Execute GetTotalPriceOfProductsByCustomerId
