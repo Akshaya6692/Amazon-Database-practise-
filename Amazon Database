@@ -21,10 +21,11 @@ END
 GO
 
 Create PROCEDURE spGetTotalPriceOfProductsByCustomerId
+@CustomerId INT
 AS 
 BEGIN
 Select CustomerId, Quantity, Price, (Price*Quantity) as TotalPrice from Invoice
-where CustomerId = 1
+where CustomerId = @CustomerId
 END
 GO
 
