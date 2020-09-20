@@ -1,22 +1,13 @@
-create DATABASE AmazonDatabase
+create DATABASE AmazonDatabase_practise
 GO
-Use AmazonDatabase
+Use AmazonDatabase_practise
 GO
 
 CREATE PROCEDURE spGetProductsByStartingLetter
+@ProductName varchar(255)
 AS
 BEGIN
-Select ProductName from Products where ProductName Like 'S%'
-END
-GO
-
-CREATE Procedure spGetProductsPaidByCash
-AS
-BEGIN
-SELECT Products.ProductName, Payment.PaymentMethod
-from Products
-cross JOIN Payment 
-where Payment.PaymentMethod='Cash' and Products.ProductName <> Payment.PaymentMethod 
+Select ProductName from Products where ProductName like  '_%'
 END
 GO
 
@@ -24,10 +15,23 @@ Create PROCEDURE spGetTotalPriceOfProductsByCustomerId
 @CustomerId INT
 AS 
 BEGIN
-Select CustomerId, Quantity, Price, (Price*Quantity) as TotalPrice from Invoice
+Select CustomerId, SUM(Price * Quantity) as TotalPrice 
+from Invoice
 where CustomerId = @CustomerId
+group by CustomerId 
 END
 GO
+
+CREATE Procedure spGetProductsPaidByCash
+AS
+BEGIN
+Select ProductId, Quantity, Price, PaymentMethod from Invoice 
+join Payment
+on Invoice.InvoiceId= Payment.InvoiceId
+where PaymentMethod = 'Cash'
+END
+GO
+
 
 Create Table Customer(
 CustomerId int NOT NULL PRIMARY KEY, 
@@ -138,8 +142,8 @@ Select * from Products
 Select * from Invoice
 Select * from Payment
 
-Execute spGetProductsByStartingLetter
+Execute spGetProductsByStartingLetter S
+
+Execute spGetTotalPriceOfProductsByCustomerId 1
 
 Execute spGetProductsPaidByCash
-
-Execute spGetTotalPriceOfProductsByCustomerId
