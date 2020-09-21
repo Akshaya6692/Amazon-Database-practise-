@@ -1,13 +1,14 @@
-create DATABASE AmazonDatabase_practise
+create DATABASE AmazonDatabase_practise2
 GO
-Use AmazonDatabase_practise
+Use AmazonDatabase_practise2
 GO
 
 CREATE PROCEDURE spGetProductsByStartingLetter
 @ProductName varchar(255)
 AS
 BEGIN
-Select ProductName from Products where ProductName like  '_%'
+Select ProductName from Products 
+where  ProductName like @ProductName + '_%' 
 END
 GO
 
@@ -15,8 +16,7 @@ Create PROCEDURE spGetTotalPriceOfProductsByCustomerId
 @CustomerId INT
 AS 
 BEGIN
-Select CustomerId, SUM(Price * Quantity) as TotalPrice 
-from Invoice
+Select CustomerId, SUM(Price * Quantity) as TotalPrice from Invoice
 where CustomerId = @CustomerId
 group by CustomerId 
 END
