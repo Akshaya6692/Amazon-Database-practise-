@@ -1,6 +1,6 @@
-create DATABASE AmazonDatabase_practise2
+create DATABASE AmazonDatabase
 GO
-Use AmazonDatabase_practise2
+Use AmazonDatabase
 GO
 
 CREATE PROCEDURE spGetProductsByStartingLetter
@@ -32,6 +32,40 @@ where PaymentMethod = 'Cash'
 END
 GO
 
+Create PROCEDURE spUpdateOrderStatusToDelivered
+@InvoiceId INT
+AS
+BEGIN
+UPDATE Invoice
+set Orderstatus = 'Delivered' where InvoiceId = @InvoiceId
+END
+GO
+
+Create Procedure spUpdateCountofProducts
+@productId int 
+As 
+begin 
+begin TRY
+BEGIN TRANSACTION
+Update Products Set ProductPrice = (ProductPrice- 100) where ProductId = @ProductId 
+Update Products Set ProductCount = (ProductCount - 1) where productId = @ProductId
+Select ProductId, ProductName, ProductType, Productcount, Productcolor, Productsize, ProductPrice Into Productcountbackup from Products
+COMMIT TRANSACTION
+end TRY
+Begin CATCH
+ROLLBACK TRANSACTION
+end CATCH
+END
+GO
+
+create view vwGetproductspurchsedbycustomers
+AS
+Select FirstName, ProductName, Quantity, Price, Orderstatus From Invoice
+Join Customer
+On Customer.CustomerId= Invoice.CustomerId
+Join Products
+on Products.ProductId = Invoice.ProductId
+GO
 
 Create Table Customer(
 CustomerId int NOT NULL PRIMARY KEY, 
@@ -71,7 +105,6 @@ Create Table Payment(
 PaymentId int NOT NULL PRIMARY KEY,
 InvoiceId Int,
 PaymentMethod nvarchar(255) NOT NULL,
-Amount int NOT NULL,
 );
 
 
@@ -103,9 +136,9 @@ VALUES (1, 'Adidas Shoe', 'Footwear', 343335, 'Black', 'L', 3000);
 INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
 VALUES (2, 'Nike Shoe', 'Footwear', 3435, 'Blue', 'S', 4500);
 INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
-VALUES (3, 'Superdry Jacket', 'Jackets', 8999, 'Pink', 'L', 2000);
+VALUES (3, 'Superdry Jacket', 'Jackets', 1, 'Pink', 'L', 2000);
 INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
-VALUES (4, 'Superdry Flipflops', 'Footwear', 34, 'Black', 'M', 899);
+VALUES (4, 'Superdry Flipflops', 'Footwear', 0, 'Black', 'M', 899);
 INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
 VALUES (5, 'Chain', 'Accessories', 2990, 'Gold', 'Nil', 30000);
 INSERT INTO Products ( ProductId, ProductName, ProductType, ProductCount, ProductColor, ProductSize, ProductPrice)
@@ -123,18 +156,18 @@ INSERT INTO Invoice (InvoiceId, CustomerId, ProductId, Quantity, Price, OrderSta
 VALUES ( 5, 2, 3, 3, 6000, 'Delivered');
 
 
-INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod, Amount)
-VALUES (1, 2, 'Creditcard', 3000);
-INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod, Amount)
-VALUES (2, 1, 'Cash', 4700);
-INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod, Amount)
-VALUES (3, 3, 'Cash', 4000);
-INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod, Amount)
-VALUES (4, 5, 'DebitCard', 40000);
-INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod, Amount)
-VALUES (5, 1, 'CreditCard', 600);
-INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod, Amount)
-VALUES (6, 1, 'CreditCard', 25000);
+INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod)
+VALUES (1, 2, 'Creditcard');
+INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod)
+VALUES (2, 1, 'Cash');
+INSERT INTO Payment(PaymentId, InvoiceId, PaymentMethod)
+VALUES (3, 3, 'Cash');
+INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod)
+VALUES (4, 5, 'DebitCard');
+INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod)
+VALUES (5, 1, 'CreditCard');
+INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod)
+VALUES (6, 1, 'CreditCard');
 
 
 Select * from Customer
@@ -147,3 +180,12 @@ Execute spGetProductsByStartingLetter S
 Execute spGetTotalPriceOfProductsByCustomerId 1
 
 Execute spGetProductsPaidByCash
+
+Execute spUpdateOrderStatusToDelivered 2
+ 
+Select * from Invoice
+ 
+Execute spUpdateCountofProducts 2
+
+Select * from vwGetproductspurchsedbycustomers 
+ 
