@@ -1,4 +1,4 @@
-create DATABASE AmazonDatabase
+CREATE DATABASE AmazonDatabase
 GO
 Use AmazonDatabase
 GO
@@ -58,14 +58,15 @@ end CATCH
 END
 GO
 
-create view vwGetproductspurchsedbycustomers
-AS
-Select FirstName, ProductName, Quantity, Price, Orderstatus From Invoice
-Join Customer
-On Customer.CustomerId= Invoice.CustomerId
-Join Products
-on Products.ProductId = Invoice.ProductId
+SET NUMERIC_ROUNDABORT, IMPLICIT_TRANSACTIONS OFF
+SET ANSI_NULLS, QUOTED_IDENTIFIER, ANSI_WARNINGS, CONCAT_NULL_YIELDS_NULL, ARITHABORT, XACT_ABORT ON
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 GO
+BEGIN TRANSACTION
+GO
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 
 Create Table Customer(
 CustomerId int NOT NULL PRIMARY KEY, 
@@ -170,10 +171,22 @@ INSERT INTO Payment (PaymentId, InvoiceId, PaymentMethod)
 VALUES (6, 1, 'CreditCard');
 
 
+Print 'Get product purchased by customers'
+GO
+create view vwGetproductspurchsedbycustomers
+AS
+Select FirstName, ProductName, Quantity, Price, Orderstatus From Invoice
+Join Customer
+On Customer.CustomerId= Invoice.CustomerId
+Join Products
+on Products.ProductId = Invoice.ProductId
+GO
+
 Select * from Customer
 Select * from Products
 Select * from Invoice
 Select * from Payment
+
 
 Execute spGetProductsByStartingLetter S
 
@@ -187,5 +200,5 @@ Select * from Invoice
  
 Execute spUpdateCountofProducts 2
 
-Select * from vwGetproductspurchsedbycustomers 
+Select * from vwGetproductspurchsedbycustomers
  
