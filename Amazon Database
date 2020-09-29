@@ -41,32 +41,27 @@ set Orderstatus = 'Delivered' where InvoiceId = @InvoiceId
 END
 GO
 
-Create Procedure spUpdateCountofProducts
-@productId int 
-As 
-begin 
-begin TRY
-BEGIN TRANSACTION
-Update Products Set ProductPrice = (ProductPrice- 100) where ProductId = @ProductId 
+
+CREATE Procedure spUpdateCountofProducts
+@CustomerId int,
+@productId int
+As
+Begin 
+Begin TRANSACTION 
+DECLARE @Prodcount int
+Select @Prodcount = ProductCount from Products where ProductId = @productId
+If @Prodcount > 0
+BEGIN 
+Update Invoice Set Price = (Price - 100) where CustomerId = @CustomerId and ProductId = @productId 
 Update Products Set ProductCount = (ProductCount - 1) where productId = @ProductId
-Select ProductId, ProductName, ProductType, Productcount, Productcolor, Productsize, ProductPrice Into Productcountbackup from Products
-COMMIT TRANSACTION
-end TRY
-Begin CATCH
+Commit TRANSACTION
+END 
+Else 
+BEGIN
 ROLLBACK TRANSACTION
-end CATCH
+END 
 END
 GO
-
-SET NUMERIC_ROUNDABORT, IMPLICIT_TRANSACTIONS OFF
-SET ANSI_NULLS, QUOTED_IDENTIFIER, ANSI_WARNINGS, CONCAT_NULL_YIELDS_NULL, ARITHABORT, XACT_ABORT ON
-SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
-GO
-BEGIN TRANSACTION
-GO
-
-SET ANSI_NULLS ON
-SET QUOTED_IDENTIFIER ON
 
 Create Table Customer(
 CustomerId int NOT NULL PRIMARY KEY, 
@@ -198,7 +193,6 @@ Execute spUpdateOrderStatusToDelivered 2
  
 Select * from Invoice
  
-Execute spUpdateCountofProducts 2
-
 Select * from vwGetproductspurchsedbycustomers
  
+Execute spUpdateCountofProducts 3, 4
